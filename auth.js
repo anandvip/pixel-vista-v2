@@ -4,12 +4,13 @@ import { showModal, hideModal } from './modal.js';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyA1DI4DB_I_IMji-ckEX99uBFIIMRhKIKQ",
+    authDomain: "pixel-vista.firebaseapp.com",
+    projectId: "pixel-vista",
+    storageBucket: "pixel-vista.appspot.com",
+    messagingSenderId: "531240232377",
+    appId: "1:531240232377:web:9964afcfaffde6dfa28268",
+    measurementId: "G-JYE7L52DRL"
 };
 
 // Initialize Firebase
