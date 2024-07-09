@@ -2,7 +2,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.3/fireba
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
 import { firebaseConfig } from './config.js';
 import { setupSearchListeners, loadImages } from './imageSearch.js';
-import { setupAuthListeners, updateAuthStatus, signOut } from './auth.js';
+import { setupAuthListeners, updateAuthStatus } from './auth.js';
 import { setupModalListeners } from './modal.js';
 
 const app = initializeApp(firebaseConfig);
