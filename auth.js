@@ -16,7 +16,7 @@ export function setupAuthListeners() {
 export function updateAuthStatus(user) {
     const authStatus = document.getElementById('auth-status');
     if (user) {
-        authStatus.textContent = `Welcome, ${user.displayName || user.email || user.phoneNumber}`;
+        authStatus.textContent = `Namaskaram, ${user.displayName || user.email || user.phoneNumber}`;
     } else {
         authStatus.textContent = 'Sign In';
     }
