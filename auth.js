@@ -1,17 +1,8 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js';
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, signInWithEmailLink, isSignInWithEmailLink, signInWithPhoneNumber, RecaptchaVerifier, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
 import { showModal, hideModal } from './modal.js';
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyA1DI4DB_I_IMji-ckEX99uBFIIMRhKIKQ",
-    authDomain: "pixel-vista.firebaseapp.com",
-    projectId: "pixel-vista",
-    storageBucket: "pixel-vista.appspot.com",
-    messagingSenderId: "531240232377",
-    appId: "1:531240232377:web:9964afcfaffde6dfa28268",
-    measurementId: "G-JYE7L52DRL"
-};
+import { firebaseConfig } from './config.js';
+// Your web app's Firebase configuration in config.js
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
