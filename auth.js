@@ -1,4 +1,5 @@
-import { showModal, hideModal } from './modal.js';
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
+ import { showModal, hideModal } from './modal.js';
 
 export function setupAuthListeners() {
     const authStatus = document.getElementById('auth-status');
