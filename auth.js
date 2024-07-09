@@ -43,8 +43,6 @@ export function signInWithGoogle() {
         });
 }
 
-import { showModal, hideModal } from './modal.js';
-
 // Initialize Firebase Auth
 const auth = firebase.auth();
 
