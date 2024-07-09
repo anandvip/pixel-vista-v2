@@ -1,6 +1,6 @@
 import { PEXELS_API_KEY } from './config.js';
 import { showModal } from './modal.js';
-import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
+import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
 let currentPage = 1;
 const perPage = 20;
