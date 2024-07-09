@@ -1,4 +1,4 @@
-// import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js';
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, signInWithEmailLink, isSignInWithEmailLink, signInWithPhoneNumber, RecaptchaVerifier, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
 import { showModal, hideModal } from './modal.js';
 
@@ -25,13 +25,13 @@ export function setupAuthListeners() {
 export function updateAuthStatus(user) {
     const authStatus = document.getElementById('auth-status');
     if (user) {
-        authStatus.textContent = `Welcome, ${user.displayName || user.email}`;
+        authStatus.textContent = `Welcome, ${user.displayName || user.email || user.phoneNumber}`;
     } else {
         authStatus.textContent = 'Sign In';
     }
 }
 
-function handleAuthClick() {
+export function handleAuthClick() {
     if (auth.currentUser) {
         signOut(auth).then(() => {
             updateAuthStatus(null);
@@ -51,17 +51,16 @@ export function signInWithGoogle() {
             updateAuthStatus(result.user);
         }).catch((error) => {
             console.error('Google sign in error:', error);
-            // Handle error (e.g., show error message to user)
+            showErrorMessage(error.message);
         });
 }
 
-// Start phone number sign-in process
-function startPhoneSignIn() {
+export function startPhoneSignIn() {
     const phoneNumber = prompt("Please enter your phone number with country code:");
     if (phoneNumber) {
-        const appVerifier = new RecaptchaVerifier('recaptcha-container', {
+        const appVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
             'size': 'invisible'
-        }, auth);
+        });
 
         signInWithPhoneNumber(auth, phoneNumber, appVerifier)
             .then((confirmationResult) => {
@@ -79,8 +78,7 @@ function startPhoneSignIn() {
     }
 }
 
-// Start email/password sign-in process
-function startEmailSignIn() {
+export function startEmailSignIn() {
     const email = prompt("Please enter your email:");
     const password = prompt("Please enter your password:");
 
@@ -97,7 +95,6 @@ function startEmailSignIn() {
     }
 }
 
-// Check for email link sign-in
 export function checkEmailLinkSignIn() {
     if (isSignInWithEmailLink(auth, window.location.href)) {
         let email = window.localStorage.getItem('emailForSignIn');
@@ -117,8 +114,7 @@ export function checkEmailLinkSignIn() {
     }
 }
 
-// Show auth modal with sign-in options
-function showAuthModal() {
+export function showAuthModal() {
     const modalContent = `
         <h2>Sign In</h2>
         <button id="google-signin">Sign in with Google</button>
@@ -133,7 +129,6 @@ function showAuthModal() {
     document.getElementById('email-signin').addEventListener('click', startEmailSignIn);
 }
 
-// Listen for auth state changes
 auth.onAuthStateChanged((user) => {
     updateAuthStatus(user);
     if (user) {
@@ -143,7 +138,6 @@ auth.onAuthStateChanged((user) => {
     }
 });
 
-// Display error messages to the user
 function showErrorMessage(message) {
     const errorElement = document.createElement('div');
     errorElement.textContent = message;
