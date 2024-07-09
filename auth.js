@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js';
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, signInWithEmailLink, isSignInWithEmailLink, signInWithPhoneNumber, RecaptchaVerifier, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
 import { showModal, hideModal } from './modal.js';
 
 // Your web app's Firebase configuration
@@ -38,7 +38,7 @@ function handleAuthClick() {
             console.error('Sign out error:', error);
         });
     } else {
-        showModal('auth');
+        showAuthModal();
     }
 }
 
@@ -54,23 +54,82 @@ export function signInWithGoogle() {
         });
 }
 
+// Start phone number sign-in process
+function startPhoneSignIn() {
+    const phoneNumber = prompt("Please enter your phone number with country code:");
+    if (phoneNumber) {
+        const appVerifier = new RecaptchaVerifier('recaptcha-container', {
+            'size': 'invisible'
+        }, auth);
+
+        signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+            .then((confirmationResult) => {
+                const verificationCode = prompt("Please enter the verification code sent to your phone:");
+                return confirmationResult.confirm(verificationCode);
+            })
+            .then((result) => {
+                hideModal();
+                updateAuthStatus(result.user);
+            })
+            .catch((error) => {
+                console.error('Phone sign in error:', error);
+                showErrorMessage(error.message);
+            });
+    }
+}
+
+// Start email/password sign-in process
+function startEmailSignIn() {
+    const email = prompt("Please enter your email:");
+    const password = prompt("Please enter your password:");
+
+    if (email && password) {
+        signInWithEmailAndPassword(auth, email, password)
+            .then((result) => {
+                hideModal();
+                updateAuthStatus(result.user);
+            })
+            .catch((error) => {
+                console.error('Email sign in error:', error);
+                showErrorMessage(error.message);
+            });
+    }
+}
+
 // Check for email link sign-in
 export function checkEmailLinkSignIn() {
-    if (auth.isSignInWithEmailLink(window.location.href)) {
+    if (isSignInWithEmailLink(auth, window.location.href)) {
         let email = window.localStorage.getItem('emailForSignIn');
         if (!email) {
             email = prompt('Please provide your email for confirmation');
         }
 
-        auth.signInWithEmailLink(email, window.location.href)
-            .then(() => {
+        signInWithEmailLink(auth, email, window.location.href)
+            .then((result) => {
                 window.localStorage.removeItem('emailForSignIn');
+                updateAuthStatus(result.user);
             })
             .catch((error) => {
                 console.error('Email link sign in error:', error);
                 showErrorMessage(error.message);
             });
     }
+}
+
+// Show auth modal with sign-in options
+function showAuthModal() {
+    const modalContent = `
+        <h2>Sign In</h2>
+        <button id="google-signin">Sign in with Google</button>
+        <button id="phone-signin">Sign in with Phone</button>
+        <button id="email-signin">Sign in with Email</button>
+        <div id="recaptcha-container"></div>
+    `;
+    showModal(modalContent);
+
+    document.getElementById('google-signin').addEventListener('click', signInWithGoogle);
+    document.getElementById('phone-signin').addEventListener('click', startPhoneSignIn);
+    document.getElementById('email-signin').addEventListener('click', startEmailSignIn);
 }
 
 // Listen for auth state changes
