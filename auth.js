@@ -115,6 +115,14 @@ export function showAuthModal() {
     `;
     showModal(modalContent);
 
+    export function signOut() {
+    const auth = firebase.auth();
+    auth.signOut().then(() => {
+        updateAuthStatus(null);
+        console.log('User signed out successfully');
+    }).catch((error) => {
+        console.error('Sign out error:', error);
+    });
     document.getElementById('google-signin').addEventListener('click', signInWithGoogle);
     document.getElementById('phone-signin').addEventListener('click', startPhoneSignIn);
     document.getElementById('email-signin').addEventListener('click', startEmailSignIn);
