@@ -1,5 +1,20 @@
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js';
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from 'https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js';
 import { showModal, hideModal } from './modal.js';
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 export function setupAuthListeners() {
     const authStatus = document.getElementById('auth-status');
@@ -16,7 +31,6 @@ export function updateAuthStatus(user) {
 }
 
 function handleAuthClick() {
-    const auth = getAuth();
     if (auth.currentUser) {
         signOut(auth).then(() => {
             updateAuthStatus(null);
@@ -30,7 +44,6 @@ function handleAuthClick() {
 
 export function signInWithGoogle() {
     const provider = new GoogleAuthProvider();
-    const auth = getAuth();
     signInWithPopup(auth, provider)
         .then((result) => {
             hideModal();
@@ -39,97 +52,6 @@ export function signInWithGoogle() {
             console.error('Google sign in error:', error);
             // Handle error (e.g., show error message to user)
         });
-}
-
-// Initialize Firebase Auth
-const auth = getAuth();
-
-// Setup event listeners for auth-related elements
-/* Removed duplicate setupAuthListeners function */
-
-// Update UI based on auth state
-/* Removed duplicate updateAuthStatus function */
-
-// Show auth modal with sign-in options
-function showAuthModal() {
-    const modalContent = `
-        <h2>Sign In</h2>
-        <button id="google-signin">Sign in with Google</button>
-        <button id="phone-signin">Sign in with Phone</button>
-        <button id="email-signin">Sign in with Email</button>
-    `;
-    showModal(modalContent);
-
-    document.getElementById('google-signin').addEventListener('click', signInWithGoogle);
-    document.getElementById('phone-signin').addEventListener('click', startPhoneSignIn);
-    document.getElementById('email-signin').addEventListener('click', startEmailSignIn);
-}
-
-// Sign in with Google
-/* Removed duplicate signInWithGoogle function */
-
-// Start phone number sign-in process
-function startPhoneSignIn() {
-    const phoneNumber = prompt("Please enter your phone number with country code:");
-    if (phoneNumber) {
-        const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-            'size': 'invisible'
-        });
-
-        auth.signInWithPhoneNumber(phoneNumber, appVerifier)
-            .then((confirmationResult) => {
-                const verificationCode = prompt("Please enter the verification code sent to your phone:");
-                return confirmationResult.confirm(verificationCode);
-            })
-            .then(() => {
-                hideModal();
-            })
-            .catch((error) => {
-                console.error('Phone sign in error:', error);
-                showErrorMessage(error.message);
-            });
-    }
-}
-
-// Start email/password sign-in process
-function startEmailSignIn() {
-    const email = prompt("Please enter your email:");
-    const password = prompt("Please enter your password:");
-
-    if (email && password) {
-        auth.signInWithEmailAndPassword(email, password)
-            .then(() => {
-                hideModal();
-            })
-            .catch((error) => {
-                console.error('Email sign in error:', error);
-                showErrorMessage(error.message);
-            });
-    }
-}
-
-// Sign out the current user
-async function signOutUser() {
-    try {
-        await signOut(auth);
-        console.log('User signed out successfully');
-    } catch (error) {
-        console.error('Sign out error:', error);
-        showErrorMessage(error.message);
-    }
-}
-
-// Display error messages to the user
-function showErrorMessage(message) {
-    const errorElement = document.createElement('div');
-    errorElement.textContent = message;
-    errorElement.style.color = 'red';
-    errorElement.style.marginTop = '10px';
-    document.body.appendChild(errorElement);
-
-    setTimeout(() => {
-        errorElement.remove();
-    }, 5000);
 }
 
 // Check for email link sign-in
@@ -160,3 +82,16 @@ auth.onAuthStateChanged((user) => {
         console.log('No user is signed in');
     }
 });
+
+// Display error messages to the user
+function showErrorMessage(message) {
+    const errorElement = document.createElement('div');
+    errorElement.textContent = message;
+    errorElement.style.color = 'red';
+    errorElement.style.marginTop = '10px';
+    document.body.appendChild(errorElement);
+
+    setTimeout(() => {
+        errorElement.remove();
+    }, 5000);
+}
