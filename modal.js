@@ -1,4 +1,4 @@
-import { signInWithGoogle } from './auth.js';
+import { signInWithGoogle } from 'auth.js';
 
 export function setupModalListeners() {
     const modal = document.getElementById('modal');
